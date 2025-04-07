@@ -27,7 +27,7 @@ def palette(t):
 
 
 # Configuration for the GIF export
-fps = 30  # Frames per second in the output GIF
+fps = 24  # Frames per second in the output GIF
 duration = 5.0  # Total duration of the GIF in seconds
 total_frames = int(fps * duration)
 canvas_height, canvas_width = 500, 500  # Dimensions
@@ -62,8 +62,8 @@ for frame_num in range(total_frames):
 
     for i in range(iterations):
         # Apply fractal transformation
-        xx = 2.0 * xx - 1.0
-        yy = 2.0 * yy - 1.0
+        xx = 3.0 * xx - 1.0
+        yy = 3.0 * yy - 1.0
 
         # Take fractional part to create repetition
         xx = np.abs(xx) % 2.0 - 1.0
@@ -74,7 +74,7 @@ for frame_num in range(total_frames):
 
         # Calculate function value for this iteration
         func_plot = np.abs(np.sin(length * np.exp(-length0) * 8.0 + elapsed_time) / 8.0)
-        func_plot = 0.02 / (func_plot + 0.0000001)
+        func_plot = 0.01 / (func_plot + 0.0000001)
 
         # Scale effect by iteration level (smaller contribution from deeper iterations)
         scale_factor = 1.0 / (i + 1)
@@ -117,7 +117,7 @@ cv2.destroyAllWindows()
 
 # Save the raw GIF first (we'll optimize it after)
 temp_output = 'temp_fractal.gif'
-output_path = 'fractal_animation_optimized.gif'
+output_path = 'fractal_animation_optimized5_v2.gif'
 
 print(f"Converting frames to PIL images...")
 frames_pil = [Image.fromarray(frame) for frame in frames]
@@ -134,25 +134,40 @@ frames_pil[0].save(
     colors=num_colors  # Reduce to specified number of colors
 )
 
+print(f"Saving optimized GIF to {output_path}...")
+frames_pil[0].save(
+    output_path,
+    save_all=True,
+    append_images=frames_pil[1:],
+    optimize=True,
+    duration=int(1000/fps),
+    loop=0,
+    colors=num_colors,
+    disposal=2  # Only update regions that change between frames
+)
+
+
 # Now apply additional optimization with pygifsicle (needs gifsicle installed)
-try:
-    print("Optimizing GIF with gifsicle...")
-    pygifsicle.optimize(temp_output, output_path)
-    print(f"Optimized GIF saved to: {output_path}")
+# try:
+#     print("Optimizing GIF with gifsicle...")
+#     pygifsicle.optimize(temp_output, output_path)
+#     print(f"Optimized GIF saved to: {output_path}")
+#
+#     # Print file size reduction
+#     original_size = Path(temp_output).stat().st_size / (1024 * 1024)  # Size in MB
+#     optimized_size = Path(output_path).stat().st_size / (1024 * 1024)  # Size in MB
+#     print(f"Original size: {original_size:.2f} MB")
+#     print(f"Optimized size: {optimized_size:.2f} MB")
+#     print(f"Size reduction: {(1 - optimized_size / original_size) * 100:.1f}%")
+#
+# except Exception as e:
+#     print(f"Gifsicle optimization failed: {e}")
+#     print("Using the unoptimized GIF instead.")
+#     import shutil
+#
+#     shutil.copy(temp_output, output_path)
 
-    # Print file size reduction
-    original_size = Path(temp_output).stat().st_size / (1024 * 1024)  # Size in MB
-    optimized_size = Path(output_path).stat().st_size / (1024 * 1024)  # Size in MB
-    print(f"Original size: {original_size:.2f} MB")
-    print(f"Optimized size: {optimized_size:.2f} MB")
-    print(f"Size reduction: {(1 - optimized_size / original_size) * 100:.1f}%")
-
-except Exception as e:
-    print(f"Gifsicle optimization failed: {e}")
-    print("Using the unoptimized GIF instead.")
-    import shutil
-
-    shutil.copy(temp_output, output_path)
+# Replace the gifsicle section with:
 
 # Clean up temporary file
 Path(temp_output).unlink(missing_ok=True)
