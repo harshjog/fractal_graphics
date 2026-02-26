@@ -24,6 +24,7 @@ This project generates dynamic fractal patterns using coordinate transformations
   - imageio
   - Pillow (PIL)
   - pygifsicle
+  - pyopencl for the GPU version
 
 - External dependencies:
   - gifsicle (for advanced GIF optimization)
@@ -34,7 +35,7 @@ This project generates dynamic fractal patterns using coordinate transformations
 
 2. Install the required Python packages:
    ```bash
-   pip install numpy opencv-python matplotlib imageio Pillow pygifsicle
+   pip install numpy opencv-python matplotlib imageio Pillow pygifsicle pyopencl
    ```
 
 3. Install gifsicle (for optimized GIFs):
@@ -51,6 +52,12 @@ Run the script to generate and preview the fractal animation in real-time:
 ```bash
 python fractal_animation.py
 ```
+or
+
+```bash
+python fractal_gpu.py
+```
+
 
 Press 'q' to exit the preview.
 
