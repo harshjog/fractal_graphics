@@ -74,10 +74,27 @@ Adjust these parameters in the script to customize your animation:
 ### Customizing the Visualization
 
 - Modify the `palette()` function to change the color scheme
+- Adjust how "deep" you want the fractal to be:
+  ```python
+  # Apply fractal transformation
+  xx = 3.0 * xx - 1.0
+  yy = 3.0 * yy - 1.0;
+  ```
+  or (gpu variant)
+  ```python
+  // Apply fractal transformation
+   x = 4.0f * x - 2.0f;
+   y = 4.0f * y - 2.0f;
+  ```
 - Adjust the mathematical function in the loop to create different patterns:
   ```python
   # Try different functions here for varied effects
   func_plot = np.abs(np.sin(length * 8.0 + elapsed_time)/ 8.0)
+  ```
+  or (gpu variant)
+   ```python
+   // Calculate function value for this iteration
+   float func_plot = fabs(sin(length * exp(-len0) * 8.0f + elapsed_time*0.01) / 8.0f);
   ```
 
 ## Optimization Techniques
